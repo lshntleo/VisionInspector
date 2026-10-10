@@ -10,6 +10,8 @@ public partial class Form1 : Form
 {
     private readonly InspectionRepository _repo = new();
 
+    private TcpInspectionServer? _server;
+
     private string? _imagePath;
 
     public Form1()
@@ -20,6 +22,8 @@ public partial class Form1 : Form
         numMaxCount.Value = 3;
         btnInspect.Enabled = false;
         RefreshHistory();
+        _server = new TcpInspectionServer(HandleCommand);
+        _server.Start(9000);
     }
 
     // 1단계: 이미지 열기
@@ -43,12 +47,49 @@ public partial class Form1 : Form
     private void btnInspect_Click(object sender, EventArgs e)
     {
         if (_imagePath == null) return;
-        var (ok, count, ms) = Inspect(_imagePath);
+        RunInspection(_imagePath);
+    }
+
+    // 버튼, TCP 공용: 반드시 UI 스레드에서 호출
+    private (bool ok, int count, long ms) RunInspection(string path)
+    {
+        var (ok, count, ms) = Inspect(path);
         ShowResult(ok, ms);
         lblTime.Text = $"검사 시간: {ms} ms / 검출: {count}개";
-
-        _repo.Insert(Path.GetFileName(_imagePath), ok, count, ms);
+        _repo.Insert(Path.GetFileName(path), ok, count, ms);
         RefreshHistory();
+        return (ok, count, ms);
+    }
+
+    // TCP 스레드에서 호출됨 -> UI 작업은 Invoke로 UI 스레드에 넘김
+    private string HandleCommand(string cmd)
+    {
+        var parts = cmd.Split(' ', 2);
+        if (!parts[0].Equals("START", StringComparison.OrdinalIgnoreCase))
+            return "ERROR,UNKNOWN_COMMAND";
+
+        string? argPath = parts.Length > 1 ? parts[1].Trim().Trim('"') : null;
+
+        return (string)Invoke(new Func<string>(() =>
+        {
+            string? path = argPath ?? _imagePath;
+            if (string.IsNullOrEmpty(path)) return "ERROR,NO_IMAGE";
+            if (!File.Exists(path)) return "ERROR,FILE_NOT_FOUND";
+
+            _imagePath = path;
+            picOriginal.Image?.Dispose();
+            picOriginal.Image = new Bitmap(path);
+            btnInspect.Enabled = true;
+
+            var (ok, count, ms) = RunInspection(path);
+            return $"{(ok ? "OK" : "NG")},{count},{ms}";
+        }));
+    }
+
+    protected override void OnFormClosing(FormClosingEventArgs e)
+    {
+        _server?.Stop();
+        base.OnFormClosing(e);
     }
 
     // 2단계: 검사 로직 (나중에 TCP에서도 재사용)
