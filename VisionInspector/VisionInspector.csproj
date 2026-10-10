@@ -8,4 +8,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Emgu.CV" Version="5.0.0.6584" />
+    <PackageReference Include="Emgu.CV.Bitmap" Version="5.0.0.6584" />
+    <PackageReference Include="Emgu.CV.runtime.windows" Version="5.0.0.6584" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.12" />
+  </ItemGroup>
+
 </Project>
