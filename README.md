@@ -1,4 +1,4 @@
-<img width="832" height="213" alt="image" src="https://github.com/user-attachments/assets/b8f894a7-5616-415a-a253-bbbdec43df5f" /># Vision Inspector
+# Vision Inspector
 
 C# WinForms + Emgu CV 기반 이미지 검사 프로그램.
 이미지 검사, OK/NG 판정, 이력 저장, TCP 통신(검사 요청/응답)을 구현했습니다.
@@ -29,16 +29,19 @@ C# WinForms + Emgu CV 기반 이미지 검사 프로그램.
 ## 스크린샷
 
 ### NG 판정 (빨간 박스 + 이력)
-![NG 판정 화면](docs/main_ng.png)
+![NG 판정 화면](<img width="856" height="536" alt="image" src="https://github.com/user-attachments/assets/7a219f9a-c9e3-4ab6-9a3c-2fdf1b8c0d94" />
+)
 
 ### OK 판정
-![OK 판정 화면](docs/main_ok.png)
+![OK 판정 화면](<img width="863" height="539" alt="image" src="https://github.com/user-attachments/assets/90bd7c8e-f8e0-446b-a8ec-796cb0a5cdaa" />
+)
 
 ### TCP 테스트 (TestClient)
-![TCP 테스트](docs/tcp_test.png)
+![TCP 테스트](<img width="1" height="1" alt="image" src="https://github.com/user-attachments/assets/b80bb91f-4c2c-40c1-bc88-55a15d72163f" />
+)
 
 ### SQLite 저장 확인
-![SQLite 표](docs/sqlite_table.png)
+![SQLite 표](<img width="832" height="213" alt="image" src="https://github.com/user-attachments/assets/97f62adb-013a-4264-8576-2dac13c375f1" />)
 
 ## 배운 점 / 어려웠던 점
 - TCP 수신 스레드에서 UI를 직접 건드릴 수 없어 Invoke로 UI 스레드에 넘김
