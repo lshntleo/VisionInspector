@@ -12,3 +12,6 @@
 
 # NuGet packages
 packages/
+
+# SQLite DB
+*.db
